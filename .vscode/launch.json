@@ -1,0 +1,42 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Train (main)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/pytorch/main.py",
+            "console": "integratedTerminal",
+            "args": ["train",
+                    "--dataset_dir", "/home/breallis/dev/frog_panns/data/training", 
+                    "--workspace", "/home/breallis/dev/frog_panns", 
+                    "--holdout_fold", "1",
+                    "--model_type", "Transfer_Cnn14_16k",
+                    "--pretrained_checkpoint_path", "/home/breallis/dev/pretrained_models/panns/Cnn14_16k_mAP=0.438.pth",
+                    "--loss_type", "clip_nll",
+                    // "--augmentation", "mixup",
+                    "--augmentation", "none",
+                    "--learning_rate", "1e-4",
+                    // "--learning_rate", "1e-4",
+                    "--batch_size", "64",
+                    "--resume_iteration", "0",
+                    "--stop_iteration", "2000",
+                    "--cuda"
+                ]
+        },
+        {
+            "name": "Pack Files",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/utils/features.py",
+            "console": "integratedTerminal",
+            "args": ["pack_audio_files_to_hdf5",
+                    "--dataset_dir", "/home/breallis/dev/frog_panns/data/training", 
+                    "--workspace", "/home/breallis/dev/frog_panns"
+                ]
+            }
+    ]
+}

@@ -18,9 +18,8 @@ from losses import get_loss_func
 from pytorch_utils import move_data_to_device, do_mixup
 from utilities import (create_folder, get_filename, create_logging, StatisticsContainer, Mixup)
 from data_generator import GtzanDataset, TrainSampler, EvaluateSampler, collate_fn
-from models import Transfer_Cnn14
+from models import Transfer_Cnn14_16k
 from evaluate import Evaluator
-
 
 def train(args):
 
@@ -39,11 +38,12 @@ def train(args):
     stop_iteration = args.stop_iteration
     device = 'cuda' if (args.cuda and torch.cuda.is_available()) else 'cpu'
     filename = args.filename
-    num_workers = 8
+    num_workers = 4
 
     loss_func = get_loss_func(loss_type)
     pretrain = True if pretrained_checkpoint_path else False
     
+    # hdf5_path = os.path.join(workspace, 'features', 'minidata_waveform.h5')
     hdf5_path = os.path.join(workspace, 'features', 'waveform.h5')
 
     checkpoints_dir = os.path.join(workspace, 'checkpoints', filename, 
@@ -134,7 +134,8 @@ def train(args):
     evaluator = Evaluator(model=model)
     
     train_bgn_time = time.time()
-    
+
+
     # Train on mini batches
     for batch_data_dict in train_loader:
 
@@ -142,7 +143,7 @@ def train(args):
         # asdf
         
         # Evaluate
-        if iteration % 200 == 0 and iteration > 0:
+        if iteration % 100 == 0 and iteration > 0:
             if resume_iteration > 0 and iteration == resume_iteration:
                 pass
             else:
@@ -167,7 +168,7 @@ def train(args):
                 train_bgn_time = time.time()
 
         # Save model 
-        if iteration % 2000 == 0 and iteration > 0:
+        if iteration % 500 == 0 and iteration > 0:
             checkpoint = {
                 'iteration': iteration, 
                 'model': model.module.state_dict()}
@@ -214,9 +215,12 @@ def train(args):
 
         # Stop learning
         if iteration == stop_iteration:
+            print("Breaking! Reached stop_iteration")
+            print(iteration)
             break 
 
         iteration += 1
+    print("Done Training")
         
 
 if __name__ == '__main__':
