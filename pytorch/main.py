@@ -17,7 +17,7 @@ from config import (sample_rate, classes_num, mel_bins, fmin, fmax, window_size,
 from losses import get_loss_func
 from pytorch_utils import move_data_to_device, do_mixup
 from utilities import (create_folder, get_filename, create_logging, StatisticsContainer, Mixup)
-from data_generator import GtzanDataset, TrainSampler, EvaluateSampler, collate_fn
+from data_generator import AudioDataset, TrainSampler, EvaluateSampler, collate_fn
 from models import Transfer_Cnn14_16k
 from evaluate import Evaluator
 
@@ -95,9 +95,9 @@ def train(args):
 
     # Parallel
     print('GPU number: {}'.format(torch.cuda.device_count()))
-    model = torch.nn.DataParallel(model)
+    # model = torch.nn.DataParallel(model)
 
-    dataset = GtzanDataset()
+    dataset = AudioDataset()
 
     # Data generator
     train_sampler = TrainSampler(
@@ -171,7 +171,7 @@ def train(args):
         if iteration % 500 == 0 and iteration > 0:
             checkpoint = {
                 'iteration': iteration, 
-                'model': model.module.state_dict()}
+                'model': model.state_dict()}
 
             checkpoint_path = os.path.join(
                 checkpoints_dir, '{}_iterations.pth'.format(iteration))

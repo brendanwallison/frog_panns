@@ -248,7 +248,8 @@ class Cnn14_16k(nn.Module):
         x = F.dropout(x, p=0.5, training=self.training)
         x = F.relu_(self.fc1(x))
         embedding = F.dropout(x, p=0.5, training=self.training)
-        clipwise_output = torch.sigmoid(self.fc_audioset(x))
+        # clipwise_output = torch.sigmoid(self.fc_audioset(x))
+        clipwise_output = self.fc_audioset(x)
         
         output_dict = {'clipwise_output': clipwise_output, 'embedding': embedding}
 
@@ -289,7 +290,7 @@ class Transfer_Cnn14_16k(nn.Module):
         output_dict = self.base(input, mixup_lambda)
         embedding = output_dict['embedding']
 
-        clipwise_output =  torch.log_softmax(self.fc_transfer(embedding), dim=-1)
+        clipwise_output =  self.fc_transfer(embedding)
         output_dict['clipwise_output'] = clipwise_output
  
         return output_dict

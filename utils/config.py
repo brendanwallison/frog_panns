@@ -1,7 +1,7 @@
 # sample_rate = 32000
 # clip_samples = sample_rate * 30
 sample_rate = 16000
-clip_samples = sample_rate * 3
+clip_samples = 16000
 
 # https://github.com/qiuqiangkong/panns_inference/issues/8
 # Hi Debayan,
